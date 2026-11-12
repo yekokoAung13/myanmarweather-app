@@ -1,0 +1,21 @@
+{
+  "id": "/",
+  "name": "Myanmar Weather",
+  "short_name": "MM Weather",
+  "description": "မြန်မာနိုင်ငံတစ်ဝန်း မြို့နယ်အလိုက် မိုးလေဝသခန့်မှန်းချက်",
+  "lang": "my",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#edf4fa",
+  "theme_color": "#102b50",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

@@ -5,6 +5,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#102b50">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Myanmar Weather">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Myanmar Weather</title>
 
 <style>
@@ -143,6 +148,26 @@ button{
  font-size:15px;
  margin-top:12px;
 }
+
+/* PWA Install */
+#pwa-install-button{
+ position:fixed;
+ bottom:20px;
+ left:50%;
+ transform:translateX(-50%);
+ z-index:9999;
+ border:0;
+ border-radius:30px;
+ padding:14px 25px;
+ background:#1765a5;
+ color:white;
+ font-size:16px;
+ font-weight:bold;
+ box-shadow:0 4px 15px #102b5050;
+ display:none;
+}
+#pwa-install-button:active{transform:translateX(-50%) scale(.96)}
+.pwa-install-style{display:none}
 </style>
 </head>
 
@@ -530,6 +555,46 @@ retry.addEventListener("click",loadTownshipData);
 
 loadTownshipData();
 
+
+/* MYANMAR_WEATHER_PWA_SETUP */
+(function(){
+ if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function(){
+   navigator.serviceWorker.register('/service-worker.js')
+    .then(function(reg){
+     console.log('PWA Service Worker ready:', reg.scope);
+    })
+    .catch(function(err){
+     console.error('PWA Service Worker error:', err);
+    });
+  });
+ }
+
+ let deferredPrompt = null;
+ const btn = document.createElement('button');
+ btn.id = 'pwa-install-button';
+ btn.textContent = '📲 App Install လုပ်ရန်';
+ document.body.appendChild(btn);
+
+ window.addEventListener('beforeinstallprompt', function(e){
+  e.preventDefault();
+  deferredPrompt = e;
+  btn.style.display = 'block';
+ });
+
+ btn.addEventListener('click', async function(){
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  btn.style.display = 'none';
+ });
+
+ window.addEventListener('appinstalled', function(){
+  btn.style.display = 'none';
+  console.log('Myanmar Weather installed');
+ });
+})();
 </script>
 
 </body>
