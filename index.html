@@ -514,13 +514,29 @@ async function loadWeather(t){
    (d.precipitation_probability_max[0] ?? "--") + "%";
   info[3].textContent = Math.round(c.apparent_temperature) + "°C";
 
+  const weekdays = [
+   "တနင်္ဂနွေ","တနင်္လာ","အင်္ဂါ","ဗုဒ္ဓဟူး",
+   "ကြာသပတေး","သောကြာ","စနေ"
+  ];
+
   forecast.innerHTML = d.time.map((date,i)=>{
-   const day = new Date(date + "T12:00:00")
-    .toLocaleDateString("my-MM",{weekday:"short"});
+   const calendarDate = new Date(date + "T00:00:00Z");
+   const day = i === 0 ? "ယနေ့" :
+    i === 1 ? "မနက်ဖြန်" :
+    weekdays[calendarDate.getUTCDay()];
+
+   const dateText = new Intl.DateTimeFormat("my-MM",{
+    day:"numeric",
+    month:"long",
+    year:"numeric",
+    timeZone:"Asia/Yangon"
+   }).format(new Date(date + "T12:00:00+06:30"));
+
    const w = weatherInfo(d.weather_code[i]);
 
    return '<div class="day">' +
-    day +
+    '<strong>' + day + '</strong>' +
+    '<small>' + dateText + '</small>' +
     '<span>' + w[0] + '</span>' +
     Math.round(d.temperature_2m_max[i]) + '° / ' +
     Math.round(d.temperature_2m_min[i]) + '°' +
