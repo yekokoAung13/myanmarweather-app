@@ -557,6 +557,7 @@ let selectedTownships = [];
 // Automatically refresh selected township weather every 10 minutes.
 let selectedWeatherTownship = null;
 let weatherRefreshTimer = null;
+let lastWeatherFetchAt = 0;
 
 function startWeatherAutoRefresh(){
  if(weatherRefreshTimer){
@@ -601,6 +602,26 @@ async function loadTownshipData(){
   status.textContent =
    "မြို့နယ်စာရင်း " + allTownships.length +
    " ခု ရရှိပါပြီ။";
+
+  // Restore the last selected township when the app opens.
+  try {
+   const savedId = localStorage.getItem("myanmarWeatherTownshipId");
+   const savedTownship = allTownships.find(t => String(t.id) === savedId);
+   const parentRegion = (savedTownship?.ancestors || [])
+    .find(a => Number(a.level) === 1);
+
+   if(savedTownship && parentRegion){
+    region.value = parentRegion.id;
+    showTownships();
+    township.value = savedTownship.id;
+    document.getElementById("place").textContent =
+     region.options[region.selectedIndex].text +
+     " - " + savedTownship.name.local;
+    loadWeather(savedTownship);
+   }
+  }catch(error){
+   console.warn("Saved township restore error:", error);
+  }
 
  }catch(error){
 
@@ -704,6 +725,10 @@ search.addEventListener("input",filterTownships);
 async function loadWeather(t){
 
  selectedWeatherTownship = t;
+ lastWeatherFetchAt = Date.now();
+ try{
+  localStorage.setItem("myanmarWeatherTownshipId", String(t.id));
+ }catch(error){}
  startWeatherAutoRefresh();
 
  const lat = Number(t.geo?.lat);
@@ -824,6 +849,20 @@ township.addEventListener("change",function(){
  loadWeather(t);
 
 });
+
+// Refresh weather when the app returns to the foreground.
+function refreshWeatherOnReturn(){
+ if(
+  document.visibilityState === "visible" &&
+  selectedWeatherTownship &&
+  Date.now() - lastWeatherFetchAt > 60 * 1000
+ ){
+  loadWeather(selectedWeatherTownship);
+ }
+}
+
+window.addEventListener("pageshow", refreshWeatherOnReturn);
+document.addEventListener("visibilitychange", refreshWeatherOnReturn);
 
 retry.addEventListener("click",loadTownshipData);
 
