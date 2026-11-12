@@ -1,0 +1,443 @@
+
+<!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#102b50">
+<title>Myanmar Weather</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+ font-family:Arial,sans-serif;
+ background:#edf4fa;
+ color:#172b46;
+}
+
+header{
+ background:linear-gradient(135deg,#102b50,#1765a5);
+ color:white;
+ padding:24px 18px;
+ border-radius:0 0 25px 25px;
+}
+
+.logo{font-size:23px;font-weight:bold}
+.tagline{font-size:13px;margin-top:9px;color:#d5eaff}
+
+.container{
+ max-width:650px;
+ margin:auto;
+ padding:18px;
+}
+
+.section-title{
+ font-size:18px;
+ font-weight:bold;
+ margin:20px 0 12px;
+}
+
+.card{
+ background:white;
+ border-radius:16px;
+ padding:17px;
+ margin-bottom:15px;
+ box-shadow:0 3px 12px #173d6010;
+}
+
+label{
+ display:block;
+ font-size:14px;
+ font-weight:bold;
+ margin-top:12px;
+}
+
+select,input{
+ width:100%;
+ padding:14px;
+ border:1px solid #d4e0ed;
+ border-radius:10px;
+ margin-top:8px;
+ background:white;
+ font-size:15px;
+ color:#172b46;
+}
+
+select:disabled{background:#edf1f5}
+
+.weather{
+ background:linear-gradient(135deg,#1765a5,#43a5dc);
+ color:white;
+ text-align:center;
+ padding:25px 15px;
+ border-radius:18px;
+}
+
+.weather-icon{font-size:65px;margin:12px}
+.temperature{font-size:48px;font-weight:bold}
+
+.weather-info{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:10px;
+ margin-top:18px;
+}
+
+.info{
+ background:#ffffff20;
+ border-radius:12px;
+ padding:13px;
+}
+
+.info small{display:block;margin-bottom:7px}
+.info b{font-size:18px}
+
+.forecast{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:8px;
+ text-align:center;
+}
+
+.day{
+ background:#f0f6fc;
+ padding:12px 4px;
+ border-radius:12px;
+ font-size:12px;
+}
+
+.day span{
+ display:block;
+ font-size:24px;
+ margin:8px 0;
+}
+
+.status{
+ font-size:13px;
+ color:#55718c;
+ margin-top:12px;
+}
+
+.notice{
+ color:#7890a5;
+ font-size:12px;
+ text-align:center;
+ margin:20px 0;
+}
+
+footer{
+ text-align:center;
+ padding:20px;
+ color:#7890a5;
+ font-size:12px;
+}
+
+button{
+ width:100%;
+ padding:13px;
+ background:#1765a5;
+ color:white;
+ border:0;
+ border-radius:10px;
+ font-size:15px;
+ margin-top:12px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+ <div class="logo">🌦️ Myanmar Weather 🇲🇲</div>
+ <div class="tagline">
+ မြန်မာနိုင်ငံတစ်ဝန်း မိုးလေဝသ ခန့်မှန်းချက်
+ </div>
+</header>
+
+<div class="container">
+
+ <div class="section-title">📍 နေရာရွေးချယ်ပါ</div>
+
+ <div class="card">
+
+  <label>တိုင်းဒေသကြီး / ပြည်နယ်</label>
+
+  <select id="region">
+   <option value="">တိုင်း/ပြည်နယ် ရွေးချယ်ပါ</option>
+
+   <option value="MMR001">ကချင်ပြည်နယ်</option>
+   <option value="MMR002">ကယားပြည်နယ်</option>
+   <option value="MMR003">ကရင်ပြည်နယ်</option>
+   <option value="MMR004">ချင်းပြည်နယ်</option>
+   <option value="MMR005">စစ်ကိုင်းတိုင်းဒေသကြီး</option>
+   <option value="MMR006">တနင်္သာရီတိုင်းဒေသကြီး</option>
+   <option value="MMR007">ပဲခူးတိုင်းဒေသကြီး</option>
+   <option value="MMR009">မကွေးတိုင်းဒေသကြီး</option>
+   <option value="MMR010">မန္တလေးတိုင်းဒေသကြီး</option>
+   <option value="MMR011">မွန်ပြည်နယ်</option>
+   <option value="MMR012">ရခိုင်ပြည်နယ်</option>
+   <option value="MMR013">ရန်ကုန်တိုင်းဒေသကြီး</option>
+   <option value="MMR014">ရှမ်းပြည်နယ်</option>
+   <option value="MMR017">ဧရာဝတီတိုင်းဒေသကြီး</option>
+   <option value="MMR018">နေပြည်တော် ပြည်ထောင်စုနယ်မြေ</option>
+  </select>
+
+  <label>မြို့နယ်</label>
+
+  <input
+   id="townshipSearch"
+   type="search"
+   placeholder="🔍 မြို့နယ်အမည် ရှာပါ..."
+   disabled
+  >
+
+  <select id="township" disabled>
+   <option value="">အရင် တိုင်း/ပြည်နယ် ရွေးပါ</option>
+  </select>
+
+  <div class="status" id="dataStatus">
+   မြို့နယ်စာရင်း ရယူရန် အသင့်ဖြစ်နေပါပြီ။
+  </div>
+
+  <button id="retryButton" type="button">
+   မြို့နယ်စာရင်း ပြန်လည်ရယူရန်
+  </button>
+
+ </div>
+
+ <div class="section-title">🌤️ လက်ရှိ မိုးလေဝသ</div>
+
+ <div class="weather">
+
+  <div id="place">မြို့နယ် မရွေးရသေးပါ</div>
+
+  <div class="weather-icon">🌤️</div>
+
+  <div class="temperature">--°C</div>
+
+  <div>မိုးလေဝသ အချက်အလက် စောင့်ဆိုင်းနေသည်</div>
+
+  <div class="weather-info">
+
+   <div class="info">
+    <small>💧 စိုထိုင်းဆ</small>
+    <b>--%</b>
+   </div>
+
+   <div class="info">
+    <small>💨 လေတိုက်နှုန်း</small>
+    <b>-- km/h</b>
+   </div>
+
+   <div class="info">
+    <small>🌧️ မိုးရွာနိုင်ခြေ</small>
+    <b>--%</b>
+   </div>
+
+   <div class="info">
+    <small>🌡️ ခံစားရသောအပူချိန်</small>
+    <b>--°C</b>
+   </div>
+
+  </div>
+ </div>
+
+ <div class="section-title">📅 ၇ ရက်စာ ခန့်မှန်းချက်</div>
+
+ <div class="card">
+  <div class="forecast">
+
+   <div class="day">ယနေ့<span>🌤️</span>--°</div>
+   <div class="day">မနက်ဖြန်<span>🌧️</span>--°</div>
+   <div class="day">နောက်တစ်ရက်<span>☀️</span>--°</div>
+   <div class="day">၄ ရက်မြောက်<span>⛅</span>--°</div>
+
+  </div>
+ </div>
+
+ <div class="card">
+  <b>⚠️ မိုးလေဝသ သတိပေးချက်</b>
+  <p style="margin-top:10px;color:#7890a5">
+   လက်ရှိ သတိပေးချက် မရရှိသေးပါ။
+  </p>
+ </div>
+
+ <div class="notice">
+  Myanmar Weather © 2026
+  <br>
+  မိုးလေဝသအချက်အလက်များကို API ချိတ်ဆက်ပြီးမှ ပြသပါမည်။
+ </div>
+
+</div>
+
+<footer>
+ Myanmar Weather 🇲🇲
+</footer>
+
+<script>
+
+const DATA_URL =
+"https://raw.githubusercontent.com/open-admin-data/myanmar-administrative-divisions/main/data/all-township.json";
+
+const region = document.getElementById("region");
+const township = document.getElementById("township");
+const search = document.getElementById("townshipSearch");
+const status = document.getElementById("dataStatus");
+const retry = document.getElementById("retryButton");
+
+let allTownships = [];
+let selectedTownships = [];
+
+async function loadTownshipData(){
+
+ status.textContent = "မြို့နယ်စာရင်း ရယူနေပါသည်...";
+
+ region.disabled = true;
+ township.disabled = true;
+ search.disabled = true;
+
+ try{
+
+  const response = await fetch(DATA_URL);
+
+  if(!response.ok){
+   throw new Error("Data download failed");
+  }
+
+  const data = await response.json();
+
+  if(!Array.isArray(data)){
+   throw new Error("Invalid data");
+  }
+
+  allTownships = data;
+
+  region.disabled = false;
+
+  township.innerHTML =
+   '<option value="">မြို့နယ် ရွေးချယ်ပါ</option>';
+
+  status.textContent =
+   "မြို့နယ်စာရင်း " + allTownships.length +
+   " ခု ရရှိပါပြီ။";
+
+ }catch(error){
+
+  status.textContent =
+   "မြို့နယ်စာရင်း ရယူမရပါ။ Internet စစ်ဆေးပါ။";
+
+  console.error(error);
+
+ }
+
+}
+
+function showTownships(){
+
+ const regionID = region.value;
+
+ township.innerHTML =
+  '<option value="">မြို့နယ် ရွေးချယ်ပါ</option>';
+
+ search.value = "";
+
+ if(!regionID){
+  township.disabled = true;
+  search.disabled = true;
+  return;
+ }
+
+ selectedTownships = allTownships.filter(t => {
+
+  return (t.ancestors || []).some(a =>
+   Number(a.level) === 1 &&
+   a.id === regionID
+  );
+
+ });
+
+ selectedTownships.sort((a,b) =>
+  a.name.local.localeCompare(b.name.local,"my")
+ );
+
+ selectedTownships.forEach(t => {
+
+  const option = document.createElement("option");
+
+  option.value = t.id;
+
+  option.textContent =
+   t.name.local + " (" + t.name.en + ")";
+
+  township.appendChild(option);
+
+ });
+
+ township.disabled = false;
+ search.disabled = false;
+
+ status.textContent =
+  "ရွေးထားသော တိုင်း/ပြည်နယ်တွင် မြို့နယ် " +
+  selectedTownships.length + " ခု ရှိပါသည်။";
+
+}
+
+function filterTownships(){
+
+ const keyword = search.value.trim().toLowerCase();
+
+ township.innerHTML =
+  '<option value="">မြို့နယ် ရွေးချယ်ပါ</option>';
+
+ const filtered = selectedTownships.filter(t => {
+
+  return t.name.local.includes(keyword) ||
+   t.name.en.toLowerCase().includes(keyword);
+
+ });
+
+ filtered.forEach(t => {
+
+  const option = document.createElement("option");
+
+  option.value = t.id;
+
+  option.textContent =
+   t.name.local + " (" + t.name.en + ")";
+
+  township.appendChild(option);
+
+ });
+
+ status.textContent =
+  "ရှာဖွေတွေ့ရှိသော မြို့နယ် " +
+  filtered.length + " ခု";
+
+}
+
+region.addEventListener("change",showTownships);
+
+search.addEventListener("input",filterTownships);
+
+township.addEventListener("change",function(){
+
+ const selected = township.options[township.selectedIndex];
+
+ if(!selected || !selected.value) return;
+
+ document.getElementById("place").textContent =
+  region.options[region.selectedIndex].text +
+  " - " + selected.textContent;
+
+});
+
+retry.addEventListener("click",loadTownshipData);
+
+loadTownshipData();
+
+</script>
+
+</body>
+</html>
+

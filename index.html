@@ -420,15 +420,109 @@ region.addEventListener("change",showTownships);
 
 search.addEventListener("input",filterTownships);
 
+
+async function loadWeather(t){
+
+ const lat = Number(t.geo?.lat);
+ const lon = Number(t.geo?.lon);
+
+ if(!Number.isFinite(lat) || !Number.isFinite(lon)){
+  document.querySelector(".temperature").textContent = "--°C";
+  document.querySelector(".weather").children[3].textContent =
+   "ဤမြို့နယ်အတွက် ကိုဩဒိနိတ် မရရှိပါ။";
+  return;
+ }
+
+ const info = document.querySelectorAll(".weather-info .info b");
+ const temperature = document.querySelector(".temperature");
+ const icon = document.querySelector(".weather-icon");
+ const description = document.querySelector(".weather").children[3];
+ const forecast = document.querySelector(".forecast");
+
+ temperature.textContent = "ရယူနေပါသည်...";
+ description.textContent = "ရာသီဥတု အချက်အလက် ရယူနေပါသည်...";
+
+ try{
+
+  const params = new URLSearchParams({
+   latitude: lat,
+   longitude: lon,
+   current: "temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m,weather_code",
+   daily: "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max",
+   timezone: "Asia/Yangon",
+   forecast_days: "7"
+  });
+
+  const response = await fetch(
+   "https://api.open-meteo.com/v1/forecast?" + params
+  );
+
+  if(!response.ok) throw new Error("Weather API error");
+
+  const data = await response.json();
+  const c = data.current;
+  const d = data.daily;
+
+  function weatherInfo(code){
+   if(code === 0) return ["☀️","ကြည်လင်သာယာ"];
+   if(code <= 2) return ["🌤️","တိမ်အသင့်အတင့်"];
+   if(code === 3) return ["☁️","တိမ်ထူထပ်"];
+   if(code <= 48) return ["🌫️","မြူဆိုင်း"];
+   if(code <= 57) return ["🌦️","မိုးဖွဲ"];
+   if(code <= 67) return ["🌧️","မိုးရွာနေ"];
+   if(code <= 77) return ["❄️","နှင်းကျ"];
+   if(code <= 82) return ["🌧️","မိုးသည်းထန်"];
+   if(code <= 86) return ["🌨️","နှင်းမုန်တိုင်း"];
+   if(code >= 95) return ["⛈️","မိုးကြိုးမုန်တိုင်း"];
+   return ["🌤️","မိုးလေဝသ"];
+  }
+
+  const condition = weatherInfo(c.weather_code);
+
+  icon.textContent = condition[0];
+  temperature.textContent = Math.round(c.temperature_2m) + "°C";
+  description.textContent = condition[1];
+
+  info[0].textContent = c.relative_humidity_2m + "%";
+  info[1].textContent = c.wind_speed_10m + " km/h";
+  info[2].textContent =
+   (d.precipitation_probability_max[0] ?? "--") + "%";
+  info[3].textContent = Math.round(c.apparent_temperature) + "°C";
+
+  forecast.innerHTML = d.time.map((date,i)=>{
+   const day = new Date(date + "T12:00:00")
+    .toLocaleDateString("my-MM",{weekday:"short"});
+   const w = weatherInfo(d.weather_code[i]);
+
+   return '<div class="day">' +
+    day +
+    '<span>' + w[0] + '</span>' +
+    Math.round(d.temperature_2m_max[i]) + '° / ' +
+    Math.round(d.temperature_2m_min[i]) + '°' +
+    '</div>';
+  }).join("");
+
+ }catch(error){
+
+  temperature.textContent = "--°C";
+  description.textContent =
+   "မိုးလေဝသ အချက်အလက် ရယူမရပါ။ Internet ပြန်စစ်ပါ။";
+  console.error("Weather error:",error);
+
+ }
+}
+
 township.addEventListener("change",function(){
 
- const selected = township.options[township.selectedIndex];
+ const t = selectedTownships.find(x => x.id === township.value);
 
- if(!selected || !selected.value) return;
+ if(!t) return;
 
  document.getElementById("place").textContent =
   region.options[region.selectedIndex].text +
-  " - " + selected.textContent;
+  " - " + t.name.local;
+
+ loadWeather(t);
 
 });
 
