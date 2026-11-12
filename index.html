@@ -276,6 +276,7 @@ button:active{transform:scale(.98)}
 }
 .bottom-nav small{font-size:10px}
 .bottom-nav a:first-child{color:#1765a5;font-weight:bold}
+.topic-section{display:none;scroll-margin-top:16px}.topic-section.active{display:block}
 html{scroll-behavior:smooth;scroll-padding-top:15px}
 
 .pwa-install-style{display:none}
@@ -350,17 +351,49 @@ html{scroll-behavior:smooth;scroll-padding-top:15px}
  </div>
 
 
+
  <section id="home-functions">
-  <div class="section-title">⚡ အမြန်အသုံးပြုရန်</div>
+  <div class="section-title">🌤️ မိုးလေဝသ အချက်အလက်များ</div>
   <div class="function-grid">
-   <a class="function-tile" href="#weather-section"><span>🌡️</span><b>လက်ရှိအပူချိန်</b><small>မြို့နယ်အလိုက်</small></a>
-   <a class="function-tile" href="#forecast-section"><span>🌧️</span><b>မိုးရွာနိုင်ခြေ</b><small>၇ ရက်စာ ခန့်မှန်းချက်</small></a>
-   <a class="function-tile" href="#location-section"><span>🗺️</span><b>တိုင်း/ပြည်နယ်</b><small>မြို့နယ်ရွေးချယ်ရန်</small></a>
-   <a class="function-tile" href="#forecast-section"><span>📅</span><b>၇ ရက်စာ</b><small>မိုးလေဝသခန့်မှန်းချက်</small></a>
-   <a class="function-tile" href="#alert-section"><span>⚠️</span><b>သတိပေးချက်</b><small>မိုးလေဝသသတင်း</small></a>
-   <a class="function-tile" href="#location-section"><span>🔍</span><b>မြို့နယ်ရှာရန်</b><small>နေရာရွေးချယ်ရန်</small></a>
+   <a class="function-tile" href="#heatwave-section">
+    <span>🌡️</span><b>အပူလှိုင်း</b>
+   </a>
+   <a class="function-tile" href="#rain-section">
+    <span>🌧️</span><b>မိုးသည်းထန်မှု</b>
+   </a>
+   <a class="function-tile" href="#storm-section">
+    <span>⛈️</span><b>မုန်တိုင်း</b>
+   </a>
+   <a class="function-tile" href="#wind-section">
+    <span>💨</span><b>လေပြင်း</b>
+   </a>
+   <a class="function-tile" href="#location-section">
+    <span>🔍</span><b>မြို့နယ်ရှာဖွေရန်</b>
+   </a>
+   <a class="function-tile" href="#forecast-section">
+    <span>📅</span><b>၇ ရက်စာခန့်မှန်းချက်</b>
+   </a>
   </div>
  </section>
+
+
+ <section class="topic-section" id="heatwave-section">
+  <div class="section-title">🌡️ အပူလှိုင်း</div>
+  <div class="card"><p>အပူချိန်မြင့်တက်မှုနှင့် အပူဒဏ်ဆိုင်ရာ အချက်အလက်များကို မိုးလေဝသဒေတာအပေါ် အခြေခံ၍ ဖော်ပြပါမည်။</p></div>
+ </section>
+ <section class="topic-section" id="rain-section">
+  <div class="section-title">🌧️ မိုးသည်းထန်မှု</div>
+  <div class="card"><p>မိုးရွာနိုင်ခြေနှင့် မိုးသည်းထန်နိုင်ခြေဆိုင်ရာ အချက်အလက်များကို ဖော်ပြပါမည်။</p></div>
+ </section>
+ <section class="topic-section" id="storm-section">
+  <div class="section-title">⛈️ မုန်တိုင်း</div>
+  <div class="card"><p>မုန်တိုင်းနှင့် ဆက်စပ်သတိပေးချက်များ ရရှိပါက ဖော်ပြပါမည်။</p></div>
+ </section>
+ <section class="topic-section" id="wind-section">
+  <div class="section-title">💨 လေပြင်း</div>
+  <div class="card"><p>လေတိုက်နှုန်းနှင့် လေပြင်းအန္တရာယ်ဆိုင်ရာ အချက်အလက်များကို ဖော်ပြပါမည်။</p></div>
+ </section>
+
  <div id="weather-section" class="section-title">🌤️ လက်ရှိ မိုးလေဝသ</div>
 
  <div class="weather">
@@ -429,8 +462,8 @@ html{scroll-behavior:smooth;scroll-padding-top:15px}
 
 <nav class="bottom-nav" aria-label="အောက်ခြေမီနူး">
  <a href="#home-functions"><span>🏠</span><small>ပင်မ</small></a>
- <a href="#location-section"><span>🗺️</span><small>နေရာ</small></a>
- <a href="#home-functions"><span>📊</span><small>Ranking</small></a>
+ <a href="#location-section"><span>📍</span><small>နေရာ</small></a>
+ <a href="#heatwave-section"><span>🌡️</span><small>အပူချိန်</small></a>
  <a href="#alert-section"><span>⚠️</span><small>သတိပေး</small></a>
  <a href="#forecast-section"><span>📅</span><small>ခန့်မှန်း</small></a>
 </nav>
@@ -439,7 +472,75 @@ html{scroll-behavior:smooth;scroll-padding-top:15px}
  Myanmar Weather 🇲🇲
 </footer>
 
+
 <script>
+(function(){
+ const home = document.getElementById("home-functions");
+ const topics = document.querySelectorAll(".topic-section");
+
+ const locationBox = document.getElementById("location-section");
+ const locationCard = locationBox.nextElementSibling;
+
+ const weather = document.getElementById("weather-section");
+ const weatherCard = weather.nextElementSibling;
+
+ const forecast = document.getElementById("forecast-section");
+ const forecastCard = forecast.nextElementSibling;
+
+ const alertBox = document.getElementById("alert-section");
+ const notice = document.querySelector(".notice");
+
+ const panels = [
+  home, locationBox, locationCard,
+  weather, weatherCard,
+  forecast, forecastCard,
+  alertBox, notice
+ ];
+
+ function showOnly(target){
+  panels.forEach(el => {
+   if(el) el.style.display = "none";
+  });
+
+  topics.forEach(section => {
+   section.classList.toggle("active", section.id === target);
+  });
+
+  if(target === "home"){
+   panels.forEach(el => {
+    if(el) el.style.display = "";
+   });
+  }else if(target === "location-section"){
+   locationBox.style.display = "";
+   locationCard.style.display = "";
+  }else if(target === "forecast-section"){
+   forecast.style.display = "";
+   forecastCard.style.display = "";
+  }else if(target === "alert-section"){
+   alertBox.style.display = "";
+  }
+
+  window.scrollTo({top:0, behavior:"smooth"});
+ }
+
+ document.querySelectorAll(".function-tile").forEach(link => {
+  link.addEventListener("click", function(e){
+   e.preventDefault();
+   showOnly(this.getAttribute("href").slice(1));
+  });
+ });
+
+ document.querySelectorAll(".bottom-nav a").forEach(link => {
+  link.addEventListener("click", function(e){
+   e.preventDefault();
+   const target = this.getAttribute("href").slice(1);
+   showOnly(target === "home-functions" ? "home" : target);
+  });
+ });
+
+ showOnly("home");
+})();
+
 
 const DATA_URL =
 "https://raw.githubusercontent.com/open-admin-data/myanmar-administrative-divisions/main/data/all-township.json";
